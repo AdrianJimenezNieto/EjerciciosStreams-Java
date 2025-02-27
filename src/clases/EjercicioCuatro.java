@@ -2,7 +2,6 @@ package clases;
 
 import java.util.ArrayList; 
 import java.util.List;
-import java.util.Arrays;
 // Importo la clase ArrayList y List porque me parece interesante para el ejercicio
 
 import java.io.File; // File para comprobar la integridad del archivo
@@ -22,15 +21,13 @@ public class EjercicioCuatro {
   private static List<String> lineaToArray(String linea) {
     // Inicializamos el arraylist resultante a vacio
     List <String> resultado = new ArrayList<>();
-    // Primero separamos el String en un array de String con el caracter ':'
-    String[] partes = linea.split(":");
-    String[] palabras = partes[1].split(" ");
-    String[] nombre = Arrays.copyOfRange(palabras, 0, palabras.length - 1);
+    // Primero separamos el String en un array de String con el metodo split mediante la cadena "Telefono:"
+    String[] partes = linea.split("Teléfono:");
 
     // Almacenamos el nombre en la primera posición
-    resultado.add(String.join(" ", nombre)); // Lo unimos mediante el metodo .join()
-    // Almacenamos el número de telefono también
-    resultado.add(partes[partes.length - 1]);
+    resultado.add(partes[0].replace("Nombre:", "")); // Almacenamos el nombre eliminadno la parte primera
+    // Almacenamos el número de telefono también, mediante trim() para eliminar espacios en blanco
+    resultado.add(partes[1].trim());
 
     return resultado;
   }
@@ -39,7 +36,7 @@ public class EjercicioCuatro {
     // Inicializo el ArrayList que será una lista de listas de Strings
     List<List<String>> resultado = new ArrayList<>();
     
-    try (BufferedReader reader = new BufferedReader(new FileReader(RUTA_ARCHIVO))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo))) {
       // Inicializamos el reader en un bloque try-catch para pillar la excepcion
       String linea; // Variable auxiliar
       while ((linea = reader.readLine()) != null) { // Leemos linea por linea
@@ -47,14 +44,14 @@ public class EjercicioCuatro {
         resultado.add(lineaToArray(linea)); 
       }
     } catch (IOException e) {
-      System.out.println("Error al leer el archivo \"" + RUTA_ARCHIVO + "\": " + e.getMessage());
+      System.out.println("Error al leer el archivo \"" + rutaArchivo + "\": " + e.getMessage());
     }
     
     return resultado;
   }
 
-  private static void imprimirResultados(List<List<String>> resultados) {
-    System.out.println("En el fichero \"" + RUTA_ARCHIVO + "\" hay un total de " + resultados.size() + " contactos.");
+  private static void imprimirResultados(List<List<String>> resultados, String rutaArchivo) {
+    System.out.println("En el fichero \"" + rutaArchivo + "\" hay un total de " + resultados.size() + " contactos.");
     System.out.println();
 
     for (List<String> elemento : resultados) {
@@ -71,11 +68,11 @@ public class EjercicioCuatro {
       // Comprobamos la integridad del archivo
       resultados = procesarArchivo(RUTA_ARCHIVO);
       // Asignamos el resultado de procesarArchivo() a la variable resultados
-      imprimirResultados(resultados);
+      imprimirResultados(resultados, RUTA_ARCHIVO);
       // Aquí podríamos hacer simplemente imprimirResultados(procesarArchivo(RUTA_ARCHIVO))
       // pero he preferido hacerlo de esta manera para que quede más legible
     } else {
-      System.out.println("El archivo \"" + RUTA_ARCHIVO + "\".");
+      System.out.println("El archivo \"" + RUTA_ARCHIVO + "\"no existe.");
     }
   }
 }
